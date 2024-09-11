@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+void monoalphabeticSubstitution(char plaintext[], char key[]) {
+    int i;
+    for (i = 0; i < strlen(plaintext); i++) {
+        if (isalpha(plaintext[i])) {
+            if (islower(plaintext[i])) {
+                printf("%c", tolower(key[plaintext[i] - 'a']));
+            } else {
+                printf("%c", toupper(key[plaintext[i] - 'A']));
+            }
+        } else {
+            printf("%c", plaintext[i]);
+        }
+    }
+}
+int main() {
+    char plaintext[100], key[] = "HELOWARYUBCDFGIJKMNPQSTVXZ"; 
+    printf("Enter the plaintext: ");
+    fgets(plaintext, sizeof(plaintext), stdin);
+
+    printf("Ciphertext: ");
+    monoalphabeticSubstitution(plaintext, key);
+
+    return 0;
+}

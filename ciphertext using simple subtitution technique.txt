@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define CIPHERTEXT "53‡‡†305))6*;4826)4‡.)4‡);806*;48†8¶60))85;;]8*;:‡8†83(88)5†;46(;88*96*?;8)‡(;485);5†2:‡(;4956*2(5—4)8¶8*;4069285);)6†8)4‡‡;1(‡9;48081;8:8‡1;48†85;4)485†528806*81(‡9;48;(88;4(‡?34;48)4‡;161;:188;‡?"
+
+void frequency_analysis(const char *text) {
+    int freq[256] = {0}; 
+    int i;
+    for (i = 0; text[i] != '\0'; i++) {
+        freq[(unsigned char)text[i]]++;
+    }
+    printf("Frequency Analysis:\n");
+    for (i = 0; i < 256; i++) {
+        if (freq[i] > 0 && isprint(i)) {
+            printf("%c: %d\n", i, freq[i]);
+        }
+    }
+}
+int main() {
+    printf("Ciphertext:\n%s\n\n", CIPHERTEXT);
+    frequency_analysis(CIPHERTEXT);
+    char decrypted[sizeof(CIPHERTEXT)];
+    strcpy(decrypted, CIPHERTEXT);
+    for (int i = 0; decrypted[i] != '\0'; i++) {
+        if (decrypted[i] == '‡') decrypted[i] = 'e';
+        else if (decrypted[i] == '†') decrypted[i] = 't';
+        else if (decrypted[i] == ';') decrypted[i] = 'h';
+    }
+    printf("\nDecrypted text (partial with substitutions):\n%s\n", decrypted);
+    return 0;
+}

@@ -1,0 +1,72 @@
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def mod_inverse(a, m):
+    for x in range(1, m):
+        if (a * x) % m == 1:
+            return x
+    return None
+
+def solve_affine_cipher(C1, C2, P1, P2):
+    # Convert letters to numbers (0-25)
+    C1 = ord(C1) - ord('A')
+    C2 = ord(C2) - ord('A')
+    P1 = ord(P1) - ord('A')
+    P2 = ord(P2) - ord('A')
+
+    # Equation: C = aP + b mod 26
+    # C1 = (a * P1 + b) mod 26
+    # C2 = (a * P2 + b) mod 26
+
+    # Setting up the equations:
+    # C1 = (a * P1 + b) mod 26
+    # C2 = (a * P2 + b) mod 26
+
+    # Subtract the equations to eliminate b:
+    # (C2 - C1) = (a * (P2 - P1)) mod 26
+    # Solve for a:
+    diff_C = (C2 - C1) % 26
+    diff_P = (P2 - P1) % 26
+
+    # Find modular inverse of diff_P
+    a_inv = mod_inverse(diff_P, 26)
+    if a_inv is None:
+        raise ValueError(f"No modular inverse for {diff_P} mod 26")
+
+    a = (diff_C * a_inv) % 26
+
+    # Now find b using one of the original equations
+    b = (C1 - a * P1) % 26
+
+    return a, b
+
+def affine_decrypt(ciphertext, a, b):
+    decrypted = ""
+    a_inv = mod_inverse(a, 26)
+    if a_inv is None:
+        raise ValueError("a and 26 are not coprime, decryption is not possible.")
+
+    for char in ciphertext:
+        if char.isalpha():
+            c = ord(char.upper()) - ord('A')
+            p = (a_inv * (c - b)) % 26
+            decrypted += chr(p + ord('A'))
+        else:
+            decrypted += char
+
+    return decrypted
+
+# Given most frequent letters
+C1, C2 = 'B', 'U'
+P1, P2 = 'E', 'T'
+
+a, b = solve_affine_cipher(C1, C2, P1, P2)
+
+print(f"Found keys: a = {a}, b = {b}")
+
+# Example ciphertext
+ciphertext = "BUXXBEXAMPLE"
+decrypted_text = affine_decrypt(ciphertext, a, b)
+print(f"Decrypted text: {decrypted_text}")

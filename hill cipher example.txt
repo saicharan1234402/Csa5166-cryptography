@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <string.h>
+void hill_cipher_encrypt(int key[2][2], int *message, int *cipher, int length) {
+    for (int i = 0; i < length; i += 2) {
+        cipher[i] = (key[0][0] * message[i] + key[0][1] * message[i + 1]) % 26;
+        cipher[i + 1] = (key[1][0] * message[i] + key[1][1] * message[i + 1]) % 26;
+    }
+}
+int main() 
+{
+    int key[2][2] = {{9, 4}, {5, 7}};
+    char plaintext[] = "meetmeattheusualplaceattenratherthaneightoclockx";
+    int length = strlen(plaintext);
+    if (length % 2 != 0) {
+        plaintext[length] = 'x';
+        plaintext[length + 1] = '\0';
+        length++;
+    }
+    int message[length];
+    for (int i = 0; i < length; i++) {
+        message[i] = plaintext[i] - 'a';
+    }
+    int cipher[length];
+    hill_cipher_encrypt(key, message, cipher, length);
+    printf("Cipher text: ");
+    for (int i = 0; i < length; i++) {
+        printf("%c", cipher[i] + 'a');
+    }
+    printf("\n");
+    return 0;
+}

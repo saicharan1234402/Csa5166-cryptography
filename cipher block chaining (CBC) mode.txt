@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+// DES constants and tables
+// (Define them as needed, similar to the previous DES decryption example)
+
+// Example key for demonstration (64-bit key)
+uint8_t key[8] = {0x13, 0x34, 0x57, 0x79, 0x9B, 0xBC, 0xDF, 0xF1};
+
+// Initial permutation table, final permutation table, S-boxes, P-box, etc.
+
+// Function prototypes
+void initialPermutation(uint8_t *block);
+void finalPermutation(uint8_t *block);
+void expansion(uint8_t *block, uint8_t *expanded_block);
+void substitution(uint8_t *expanded_block, uint8_t *substituted_block);
+void permutation(uint8_t *substituted_block, uint8_t *permuted_block);
+void xorBlocks(uint8_t *block1, uint8_t *block2, int size);
+void generateSubkeys(uint8_t *key, uint8_t *subkeys[]);
+void desEncrypt(uint8_t *block, uint8_t *subkeys[]);
+
+// Initial and final permutation tables, S-boxes, P-box, etc. (Define them as needed)
+
+// Example of DES encryption functions (similar to previous example)
+
+// Function to perform initial permutation
+void initialPermutation(uint8_t *block) {
+    // Implement initial permutation logic
+}
+
+// Function to perform final permutation
+void finalPermutation(uint8_t *block) {
+    // Implement final permutation logic
+}
+
+// Function to perform expansion E
+void expansion(uint8_t *block, uint8_t *expanded_block) {
+    // Implement expansion logic
+}
+
+// Function to perform substitution using S-boxes
+void substitution(uint8_t *expanded_block, uint8_t *substituted_block) {
+    // Implement substitution logic
+}
+
+// Function to perform permutation P
+void permutation(uint8_t *substituted_block, uint8_t *permuted_block) {
+    // Implement permutation logic
+}
+
+// Function to perform XOR operation between two blocks
+void xorBlocks(uint8_t *block1, uint8_t *block2, int size) {
+    // Implement XOR logic
+}
+
+// Function to generate subkeys from the given key
+void generateSubkeys(uint8_t *key, uint8_t *subkeys[]) {
+    // Implement key schedule algorithm to generate subkeys
+}
+
+// Function to encrypt a block using DES
+void desEncrypt(uint8_t *block, uint8_t *subkeys[]) {
+    // Implement DES encryption logic
+}
+
+// Function to perform encryption in CBC mode
+void cbcEncrypt(uint8_t *plaintext, int plaintext_length, uint8_t *key, uint8_t *iv, uint8_t *ciphertext) {
+    uint8_t *subkeys[16]; // Array of subkeys for DES rounds
+    uint8_t block[8];     // Current block being processed (plaintext or ciphertext block)
+    uint8_t temp[8];      // Temporary storage for XOR operation
+
+    // Generate subkeys from the key
+    generateSubkeys(key, subkeys);
+
+    // Initialize the IV (Initialization Vector)
+    memcpy(block, iv, 8);
+
+    // Encrypt each block of plaintext
+    for (int i = 0; i < plaintext_length; i += 8) {
+        // XOR plaintext block with the previous ciphertext block (or IV for the first block)
+        xorBlocks(block, plaintext + i, 8);
+
+        // Encrypt the current block using DES
+        desEncrypt(block, subkeys);
+
+        // Store the ciphertext block
+        memcpy(ciphertext + i, block, 8);
+    }
+}
+
+int main() {
+    uint8_t plaintext[256] = "This is a secret message."; // Example plaintext
+    int plaintext_length = strlen((char *)plaintext);      // Length of plaintext
+    uint8_t iv[8] = {0xAB, 0xCD, 0xEF, 0x12, 0x34, 0x56, 0x78, 0x90}; // Initialization Vector (IV)
+    uint8_t ciphertext[256]; // Buffer to store ciphertext
+
+    // Encrypt the plaintext using CBC mode
+    cbcEncrypt(plaintext, plaintext_length, key, iv, ciphertext);
+
+    // Display the ciphertext
+    printf("Ciphertext:\n");
+    for (int i = 0; i < plaintext_length; ++i) {
+        printf("%02X ", ciphertext[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
