@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#define SIZE 5
+void generateMatrix(char key[25], char matrix[SIZE][SIZE]);
+void preprocessText(char* text, char* processed);
+void playfairEncrypt(char matrix[SIZE][SIZE], char* plaintext, char* ciphertext);
+void findPosition(char matrix[SIZE][SIZE], char letter, int* row, int* col);
+
+int main() {
+    char key[] = "MFHIJKUNOPQZVWXVYELARGDSTBC";
+    char matrix[SIZE][SIZE];
+    char plaintext[] = "Must see you over Cadogan West. Coming at once.";
+    char processedText[100] = {0};
+    char ciphertext[100] = {0};
+
+    generateMatrix(key, matrix);
+    preprocessText(plaintext, processedText);
+    playfairEncrypt(matrix, processedText, ciphertext);
+
+    printf("Plaintext: %s\n", plaintext);
+    printf("Processed Text: %s\n", processedText);
+    printf("Ciphertext: %s\n", ciphertext);
+
+    return 0;
+}
+
+void generateMatrix(char key[25], char matrix[SIZE][SIZE]) {
+    int k = 0;
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            matrix[i][j] = key[k++];
+        }
+    }
+}
+void preprocessText(char* text, char* processed) {
+    int k = 0;
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i])) {
+            processed[k++] = toupper(text[i] == 'J' ? 'I' : text[i]);
+        }
+    }
+    if (strlen(processed) % 2 != 0) {
+        processed[k++] = 'X';
+    }
+    processed[k] = '\0';
+}
+
+void playfairEncrypt(char matrix[SIZE][SIZE], char* plaintext, char* ciphertext) {
+    int len = strlen(plaintext);
+    for (int i = 0; i < len; i += 2) {
+        char a = plaintext[i];
+        char b = plaintext[i + 1];
+        int row1, col1, row2, col2;
+
+        findPosition(matrix, a, &row1, &col1);
+        findPosition(matrix, b, &row2, &col2);
+
+        if (row1 == row2) {
+            ciphertext[i] = matrix[row1][(col1 + 1) % SIZE];
+            ciphertext[i + 1] = matrix[row2][(col2 + 1) % SIZE];
+        } else if (col1 == col2) {
+            ciphertext[i] = matrix[(row1 + 1) % SIZE][col1];
+            ciphertext[i + 1] = matrix[(row2 + 1) % SIZE][col2];
+        } else {
+            ciphertext[i] = matrix[row1][col2];
+            ciphertext[i + 1] = matrix[row2][col1];
+        }
+    }
+    ciphertext[len] = '\0';
+}
+
+void findPosition(char matrix[SIZE][SIZE], char letter, int* row, int* col) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (matrix[i][j] == letter) {
+                *row = i;
+                *col = j;
+                return;
+            }
+        }
+    }
+}
