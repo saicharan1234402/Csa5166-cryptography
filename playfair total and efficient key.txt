@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <math.h>
+int main() 
+{
+    double log2_25_fact = 83.9;
+    double total_keys = pow(2, log2_25_fact);
+    printf("Total number of possible keys: 2^%.1f\n", log2_25_fact);
+    double unique_keys = pow(2, log2_25_fact - 10);
+    printf("Number of effectively unique keys: 2^%.1f\n", log2_25_fact - 10);
+    return 0;
+}
