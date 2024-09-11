@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+void generateCipherSequence(char* keyword, char* cipherSeq) {
+    int alpha[26] = {0};
+    int index = 0;
+
+    // Add keyword to cipher sequence
+    for (int i = 0; keyword[i] != '\0'; i++) {
+        char ch = toupper(keyword[i]);
+        if (alpha[ch - 'A'] == 0) {
+            cipherSeq[index++] = ch;
+            alpha[ch - 'A'] = 1;
+        }
+    }
+
+    // Add remaining letters
+    for (char ch = 'A'; ch <= 'Z'; ch++) {
+        if (alpha[ch - 'A'] == 0) {
+            cipherSeq[index++] = ch;
+        }
+    }
+    cipherSeq[index] = '\0'; // Null-terminate the string
+}
+
+void encrypt(char* plaintext, char* ciphertext, char* cipherSeq) {
+    for (int i = 0; plaintext[i] != '\0'; i++) {
+        if (isalpha(plaintext[i])) {
+            char ch = toupper(plaintext[i]);
+            ciphertext[i] = cipherSeq[ch - 'A'];
+        } else {
+            ciphertext[i] = plaintext[i];
+        }
+    }
+    ciphertext[strlen(plaintext)] = '\0';
+}
+
+void decrypt(char* ciphertext, char* decryptedText, char* cipherSeq) {
+    for (int i = 0; ciphertext[i] != '\0'; i++) {
+        if (isalpha(ciphertext[i])) {
+            char ch = toupper(ciphertext[i]);
+            char* pos = strchr(cipherSeq, ch);
+            decryptedText[i] = 'A' + (pos - cipherSeq);
+        } else {
+            decryptedText[i] = ciphertext[i];
+        }
+    }
+    decryptedText[strlen(ciphertext)] = '\0';
+}
+
+int main() {
+    char keyword[27];
+    char plaintext[100];
+    char cipherSeq[27];
+    char ciphertext[100];
+    char decryptedText[100];
+
+    printf("Enter keyword: ");
+    scanf("%s", keyword);
+
+    printf("Enter plaintext: ");
+    scanf(" %[^\n]", plaintext);
+
+    generateCipherSequence(keyword, cipherSeq);
+
+    printf("Cipher Sequence: %s\n", cipherSeq);
+
+    encrypt(plaintext, ciphertext, cipherSeq);
+    printf("Encrypted Text: %s\n", ciphertext);
+
+    decrypt(ciphertext, decryptedText, cipherSeq);
+    printf("Decrypted Text: %s\n", decryptedText);
+
+    return 0;
+}
